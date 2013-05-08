@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# Shell script for making my sweet build environment.
+#
+# Usage:
+# * buildenv new C
+# * buildenv up
+E_SUCCESS=0
+E_BADENVTYPE=1
+E_BADPARAM=2
+
+TARGETPATH=`pwd`
+TEMPLATEPATH=~/proj/buildenv
+
+case "$1" in
+    new)
+        if [ ! -d $TEMPLATEPATH/"$2" ]; then
+            echo "Error: Supplied enironment type ("$2") does not exist in $TEMPLATEPATH"
+            exit $E_BADENVTYPE
+        else
+            ENVPATH=$TEMPLATEPATH/"$2"
+        fi
+
+        cp $ENVPATH/buildenv.tar.gz $TARGETPATH
+        pushd $TARGETPATH
+        tar -xzf buildenv.tar.gz
+        . mkbuildenv.sh
+        rm mkbuildenv.sh buildenv.tar.gz
+        popd
+        exit $E_SUCCESS
+        ;;
+    update)
+        if [ ! -z "$2" ]; then
+            if [ -d "$2" ] && [ -e "$2"/.buildenv ]; then
+                TARGETPATH="$2"
+            else
+                echo "Error: Specified target path does not exist or does not contain a .buildenv file."
+                exit $E_BADPARAM
+            fi
+        fi
+
+        CONFFILE=$TARGETPATH/.buildenv
+        ENVPATH=$TEMPLATEPATH/`awk '$1 ~ /type/ {print $2}' $CONFFILE`
+        ;;
+    *)
+        echo "Usage: ${0##*/} new [type]"
+        echo "                update [target]"
+        exit $E_BADPARAM
+        ;;
+esac
+
+# -> cp from templates dir for new.
+# -> ask for confirmation if newer and cp for update.
