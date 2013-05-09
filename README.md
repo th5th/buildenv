@@ -5,7 +5,7 @@ Buildenv is a Bash script and associated templates to easily set up new projects
 
 ### Installation
 
-To use buildenv, download the sauce and run `make install` (you will probably need to sudo that). This installs the buildenv script to /usr/local/bin/buildenv, and the provided templates to /etc/buildenv.
+To use buildenv, download the sauce and run `make install` (you will probably need to sudo that). This installs the buildenv script to /usr/local/bin/buildenv, and the provided templates to /usr/local/etc/buildenv.
 
 ### Usage
 
@@ -23,8 +23,11 @@ To create a type of project tarball in the first place use:
 
 This packs all the files in SOURCE directory up into a tarball which is stored under TEMPLATEPATH/TYPE, for later access by new. If the SOURCE directory is omitted, the TEMPLATEPATH/TYPE folder is repackaged, essentially updating the tarball to reflect any code changes made to the template files.
 
+### License
+
+buildenv as a tool is licensed under the permissive Apache 2.0 license, as recommended by FSF for short works. I consider the templates installed by buildenv to be in the public domain, but they are so short I have not bothered to explicitly license them.
+
 ### Todo
 
-1. Add LICENSE file.
 1. Probably move mkbuildenv.sh out of the tarball and extract the tarball from where it sits. This avoids having to delete stuff each time.
 1. Add a -e flag to pass arbitrary arguments to mkbuildenv.sh.

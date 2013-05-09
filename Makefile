@@ -3,7 +3,7 @@
 DEFAULTTYPES = C C++
 BINPATH = /usr/local
 # TEMPLATEPATH is hardcoded into the script...
-TEMPLATEPATH = /etc
+TEMPLATEPATH = /usr/local/etc
 
 dummy:
 	@echo No default target. Use \'make install\' or \'make uninstall\'.
