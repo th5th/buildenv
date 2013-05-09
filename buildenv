@@ -73,7 +73,7 @@ case "$1" in
         if [ ! -z "$3" ]; then
             PACKPATH="$3"
         else
-            PACKPATH=`pwd`
+            PACKPATH=$TARGETPATH
         fi
 
         if [ -d "$PACKPATH" ] && [ -e "$PACKPATH"/mkbuildenv.sh ]; then
@@ -92,9 +92,9 @@ case "$1" in
         popd
         ;;
     *)
-        echo "Usage: ${0##*/} new TYPE [target]"
+        echo "Usage: ${0##*/} new TYPE [TARGET]"
         echo "                update TARGET"
-        echo "                package TYPE [target]"
+        echo "                package TYPE [SOURCE]"
         exit $E_BADPARAM
         ;;
 esac

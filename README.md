@@ -7,16 +7,16 @@ Buildenv is a Bash script and associated templates to easily set up new projects
 
 To summon a new C project, use:
 
-`$ buildenv new C TARGETDIR`
+`$ buildenv new C [TARGETDIR]`
 
 As you can see from the source code, this copies a tarball from the templates/C directory into the TARGETDIR, unpacks it, runs the mkbuildenv.sh script then deletes the tarball and mkbuildenv.sh. The C environment given creates a new git repo and commits an initial commit with the first bits in.
 
+If TARGETDIR is omitted, the current working directory is used.
+
 To create a type of project tarball in the first place use:
 
-`$ buildenv package TYPE TARGETDIR`
+`$ buildenv package TYPE [TARGETDIR]`
 
-This packs all the files in TARGETDIR up into a tarball which is stored under templates/TYPE, for later access by new.
-
-In either use case, if TARGETDIR is omitted, the current directory is used.
+This packs all the files in TARGETDIR up into a tarball which is stored under templates/TYPE, for later access by new. If TARGETDIR is omitted, the TEMPLATEPATH/TYPE folder is repackaged, essentially updating the tarball to reflect any code changes made to the template files.
 
 I'm not sure how I feel about the update command so that's "undocumented" for now...
