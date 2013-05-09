@@ -6,10 +6,10 @@
 #                 package TYPE [SOURCE]
 #
 E_SUCCESS=0
-E_BADENVTYPE=1
+E_BADTYPE=1
 E_BADPARAM=2
 
-TEMPLATEPATH=~/proj/buildenv
+TEMPLATEPATH=/etc/buildenv
 
 # unpack the binary under directory $1 into directory $2.
 function unpack()
@@ -39,18 +39,14 @@ case "$1" in
     new)
         if [ ! -d $TEMPLATEPATH/"$2" ]; then
             echo "Error: Supplied enironment type ("$2") does not exist in $TEMPLATEPATH"
-            exit $E_BADENVTYPE
+            exit $E_BADTYPE
         else
             TYPEPATH=$TEMPLATEPATH/"$2"
         fi
 
         if [ ! -z "$3" ]; then
-            if [ -d "$3" ]; then
-                TARGETPATH="$3"
-            else
-                echo "Error: Supplied target "$3" is not a valid directory."
-                exit $E_BADPARAM
-            fi
+            TARGETPATH="$3"
+            if [ ! -d "$3" ]; then mkdir -p $TARGETPATH; fi
         else
             TARGETPATH=`pwd`
         fi
