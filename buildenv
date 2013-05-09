@@ -9,8 +9,17 @@ E_SUCCESS=0
 E_BADENVTYPE=1
 E_BADPARAM=2
 
-TARGETPATH=`pwd`
 TEMPLATEPATH=~/proj/buildenv
+
+function get_env_package()
+{
+    cp $1/buildenv.tar.gz $2
+    pushd $2
+    tar --keep-newer-files -xzf buildenv.tar.gz
+    . mkbuildenv.sh
+    rm mkbuildenv.sh buildenv.tar.gz
+    popd
+}
 
 case "$1" in
     new)
@@ -21,33 +30,71 @@ case "$1" in
             ENVPATH=$TEMPLATEPATH/"$2"
         fi
 
-        cp $ENVPATH/buildenv.tar.gz $TARGETPATH
-        pushd $TARGETPATH
-        tar -xzf buildenv.tar.gz
-        . mkbuildenv.sh
-        rm mkbuildenv.sh buildenv.tar.gz
-        popd
+        if [ ! -z "$3" ]; then
+            if [ -d "$3" ]; then
+                TARGETPATH="$3"
+            else
+                echo "Error: Supplied buildenv new target "$3" is not a valid directory."
+                exit $E_BADPARAM
+            fi
+        else
+            TARGETPATH=`pwd`
+        fi
+
+        get_env_package $ENVPATH $TARGETPATH
         exit $E_SUCCESS
         ;;
     update)
         if [ ! -z "$2" ]; then
-            if [ -d "$2" ] && [ -e "$2"/.buildenv ]; then
-                TARGETPATH="$2"
-            else
-                echo "Error: Specified target path does not exist or does not contain a .buildenv file."
-                exit $E_BADPARAM
-            fi
+            TARGETPATH="$2"
+        else
+            TARGETPATH=`pwd`
         fi
 
-        CONFFILE=$TARGETPATH/.buildenv
-        ENVPATH=$TEMPLATEPATH/`awk '$1 ~ /type/ {print $2}' $CONFFILE`
+        if [ -d $TARGETPATH ] && [ -e $TARGETPATH/.buildenv ]; then
+            ENVPATH=$TEMPLATEPATH/`awk '$1 ~ /type/ {print $2}' $TARGETPATH/.buildenv`
+        else
+            echo "Error: Specified target path does not exist or does not contain a .buildenv file."
+            exit $E_BADPARAM
+        fi
+        get_env_package $ENVPATH $TARGETPATH
+
+        ;;
+    package)
+        # Command to create a new build environment type from the current working dir.
+        if [ -z "$2" ]; then
+            echo "Error: Must provide type name to package command."
+            exit $E_BADPARAM
+        else
+            TARGETPATH=$TEMPLATEPATH/"$2"
+        fi
+
+        # -> Checks for existence of mkbuildenv.sh.
+        if [ ! -z "$3" ]; then
+            PACKPATH="$3"
+        else
+            PACKPATH=`pwd`
+        fi
+
+        if [ -d "$PACKPATH" ] && [ -e "$PACKPATH"/mkbuildenv.sh ]; then
+            pushd $PACKPATH
+        else
+            echo "Error: Specified package path does not exist or does not contain a mkbuildenv.sh file."
+            exit $E_BADPARAM
+        fi
+
+        # -> Creates a tarball for the whole directory.
+        mkdir -p $TARGETPATH
+        if [ -e buildenv.tar.gz ]; then rm buildenv.tar.gz; fi
+        tar -czf buildenv.tar.gz `ls -A`
+        # -> Moves tarball to type-dir.
+        mv -u --target-directory=$TARGETPATH buildenv.tar.gz 
+        popd
         ;;
     *)
-        echo "Usage: ${0##*/} new [type]"
-        echo "                update [target]"
+        echo "Usage: ${0##*/} new TYPE [target]"
+        echo "                update TARGET"
+        echo "                package TYPE [target]"
         exit $E_BADPARAM
         ;;
 esac
-
-# -> cp from templates dir for new.
-# -> ask for confirmation if newer and cp for update.
