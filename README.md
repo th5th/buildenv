@@ -7,22 +7,20 @@ Buildenv is a Bash script and associated templates to easily set up new projects
 
 To create a new C project, use:
 
-`$ buildenv new C [TARGETDIR]`
+`$ buildenv new C [TARGET]`
 
-As you can see from the source code, this copies a tarball from the templates/C directory into the TARGETDIR, unpacks it, runs the mkbuildenv.sh script then deletes the tarball and mkbuildenv.sh. The C environment given creates a new git repo and commits an initial commit with the first bits in.
+As you can see from the source code, this copies a tarball from the templates/C directory into the TARGET directory, unpacks it, runs the mkbuildenv.sh script then deletes the tarball and mkbuildenv.sh. The C environment given creates a new git repo and commits an initial commit with the first bits in.
 
-If TARGETDIR is omitted, the current working directory is used.
+If TARGET directory is omitted, the current working directory is used.
 
 To create a type of project tarball in the first place use:
 
-`$ buildenv package TYPE [TARGETDIR]`
+`$ buildenv package TYPE [SOURCE]`
 
-This packs all the files in TARGETDIR up into a tarball which is stored under templates/TYPE, for later access by new. If TARGETDIR is omitted, the TEMPLATEPATH/TYPE folder is repackaged, essentially updating the tarball to reflect any code changes made to the template files.
-
-I'm not sure how I feel about the update command so that's "undocumented" for now...
+This packs all the files in SOURCE directory up into a tarball which is stored under TEMPLATEPATH/TYPE, for later access by new. If the SOURCE directory is omitted, the TEMPLATEPATH/TYPE folder is repackaged, essentially updating the tarball to reflect any code changes made to the template files.
 
 ### Todo
 
-1. Add auto-packaging: if buildenv.tar.gz doesn't exist in the type directory, automatically try `buildenv package TYPE`.
-1. Adjust mkbuildenv.sh scripts to not add all files to git, just the defined ones in the type directory. Possibly spec this in .buildenv?
 1. Provide an installation Makefile for buildenv itself. Think about where the templates directory should be - /etc/buildenv/ and ~/.buildenv/
+1. Add LICENSE file.
+1. Consider removing main.c files...?

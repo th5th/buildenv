@@ -2,16 +2,17 @@
 #
 # Shell script for making my sweet build environment.
 #
-# Usage:
-# * buildenv new C
-# * buildenv up
+# Usage: buildenv new TYPE [TARGET]
+#                 package TYPE [SOURCE]
+#
 E_SUCCESS=0
 E_BADENVTYPE=1
 E_BADPARAM=2
 
 TEMPLATEPATH=~/proj/buildenv
 
-function get_env_package()
+# unpack the binary under directory $1 into directory $2.
+function unpack()
 {
     cp $1/buildenv.tar.gz $2
     pushd $2
@@ -21,44 +22,44 @@ function get_env_package()
     popd
 }
 
+# pack the source under directory $1 into a tarball in directory $2.
+function pack()
+{
+        # Create a tarball for the whole directory.
+        mkdir -p $2
+        pushd $1
+        if [ -e buildenv.tar.gz ]; then rm buildenv.tar.gz; fi
+        tar -czf buildenv.tar.gz `ls -A`
+        # Move tarball to $2.
+        mv -u --target-directory=$2 buildenv.tar.gz 
+        popd
+}
+
 case "$1" in
     new)
         if [ ! -d $TEMPLATEPATH/"$2" ]; then
             echo "Error: Supplied enironment type ("$2") does not exist in $TEMPLATEPATH"
             exit $E_BADENVTYPE
         else
-            ENVPATH=$TEMPLATEPATH/"$2"
+            TYPEPATH=$TEMPLATEPATH/"$2"
         fi
 
         if [ ! -z "$3" ]; then
             if [ -d "$3" ]; then
                 TARGETPATH="$3"
             else
-                echo "Error: Supplied buildenv new target "$3" is not a valid directory."
+                echo "Error: Supplied target "$3" is not a valid directory."
                 exit $E_BADPARAM
             fi
         else
             TARGETPATH=`pwd`
         fi
 
-        get_env_package $ENVPATH $TARGETPATH
+        # If there isn't an available tarball, make one!
+        if [ ! -e $TYPEPATH/buildenv.tar.gz ]; then pack $TYPEPATH $TYPEPATH; fi
+
+        unpack $TYPEPATH $TARGETPATH
         exit $E_SUCCESS
-        ;;
-    update)
-        if [ ! -z "$2" ]; then
-            TARGETPATH="$2"
-        else
-            TARGETPATH=`pwd`
-        fi
-
-        if [ -d $TARGETPATH ] && [ -e $TARGETPATH/.buildenv ]; then
-            ENVPATH=$TEMPLATEPATH/`awk '$1 ~ /type/ {print $2}' $TARGETPATH/.buildenv`
-        else
-            echo "Error: Specified target path does not exist or does not contain a .buildenv file."
-            exit $E_BADPARAM
-        fi
-        get_env_package $ENVPATH $TARGETPATH
-
         ;;
     package)
         # Command to create a new build environment type from the current working dir.
@@ -66,34 +67,25 @@ case "$1" in
             echo "Error: Must provide type name to package command."
             exit $E_BADPARAM
         else
-            TARGETPATH=$TEMPLATEPATH/"$2"
+            TYPEPATH=$TEMPLATEPATH/"$2"
+        fi
+
+        if [ ! -z "$3" ]; then
+            SOURCEPATH="$3"
+        else
+            SOURCEPATH=$TYPEPATH
         fi
 
         # -> Checks for existence of mkbuildenv.sh.
-        if [ ! -z "$3" ]; then
-            PACKPATH="$3"
+        if [ -d "$SOURCEPATH" ] && [ -e "$SOURCEPATH"/mkbuildenv.sh ]; then
+            pack $SOURCEPATH $TYPEPATH
         else
-            PACKPATH=$TARGETPATH
-        fi
-
-        if [ -d "$PACKPATH" ] && [ -e "$PACKPATH"/mkbuildenv.sh ]; then
-            pushd $PACKPATH
-        else
-            echo "Error: Specified package path does not exist or does not contain a mkbuildenv.sh file."
+            echo "Error: Specified source path does not exist or does not contain a mkbuildenv.sh file."
             exit $E_BADPARAM
         fi
-
-        # -> Creates a tarball for the whole directory.
-        mkdir -p $TARGETPATH
-        if [ -e buildenv.tar.gz ]; then rm buildenv.tar.gz; fi
-        tar -czf buildenv.tar.gz `ls -A`
-        # -> Moves tarball to type-dir.
-        mv -u --target-directory=$TARGETPATH buildenv.tar.gz 
-        popd
         ;;
     *)
         echo "Usage: ${0##*/} new TYPE [TARGET]"
-        echo "                update TARGET"
         echo "                package TYPE [SOURCE]"
         exit $E_BADPARAM
         ;;

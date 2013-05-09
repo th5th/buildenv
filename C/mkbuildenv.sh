@@ -1,5 +1,4 @@
 #!/bin/bash
 git init
-git add .
-git reset -- buildenv.tar.gz mkbuildenv.sh
+git add main.c Makefile .gitignore
 git commit -a -m "Repository initialised by buildenv."
