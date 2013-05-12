@@ -18,31 +18,32 @@
 E_SUCCESS=0
 E_BADTYPE=1
 E_BADPARAM=2
+E_COULDNOTTAR=3
 
 TEMPLATEPATH="/usr/local/etc/buildenv"
 
-# unpack the binary under directory $1 into directory $2.
+# unpack the package in directory for type $1 into directory $2.
 function unpack()
 {
-    cp $1/buildenv.tar.gz $2
+    tar --keep-newer-files -xzf "$TEMPLATEPATH"/"$1"/"$1".tar.gz -C $2
     pushd $2
-    tar --keep-newer-files -xzf buildenv.tar.gz
-    . mkbuildenv.sh
-    rm mkbuildenv.sh buildenv.tar.gz
+    $TEMPLATEPATH/$1/mkbuildenv.sh
     popd
 }
 
-# pack the source under directory $1 into a tarball in directory $2.
+# pack the source under directory $1 into a tarball for type $2.
 function pack()
 {
-        # Create a tarball for the whole directory.
-        mkdir -p $2
-        pushd $1
-        if [ -e buildenv.tar.gz ]; then rm buildenv.tar.gz; fi
-        tar -czf buildenv.tar.gz `ls -A`
-        # Move tarball to $2.
-        mv -u --target-directory=$2 buildenv.tar.gz 
-        popd
+    # Create a tarball for the whole directory.
+    TARBALL="$TEMPLATEPATH"/"$2"/"$2".tar.gz
+    mkdir -p $TEMPLATEPATH/$2
+    if [ -e $TARBALL ]; then rm $TARBALL; fi
+    tar --exclude=mkbuildenv.sh -czf $TARBALL -C $1 `ls -A $1`
+    if [ ! -e $TARBALL ]; then
+        echo "Error: Could not create tarball."
+        exit $E_COULDNOTTAR
+    fi
+    cp -u --target-directory=$TEMPLATEPATH/$2 $1/mkbuildenv.sh
 }
 
 case "$1" in
@@ -50,8 +51,6 @@ case "$1" in
         if [ ! -d $TEMPLATEPATH/"$2" ]; then
             echo "Error: Supplied enironment type ("$2") does not exist in $TEMPLATEPATH"
             exit $E_BADTYPE
-        else
-            TYPEPATH=$TEMPLATEPATH/"$2"
         fi
 
         if [ ! -z "$3" ]; then
@@ -62,9 +61,9 @@ case "$1" in
         fi
 
         # If there isn't an available tarball, make one!
-        if [ ! -e $TYPEPATH/buildenv.tar.gz ]; then pack $TYPEPATH $TYPEPATH; fi
+        if [ ! -e "$TEMPLATEPATH"/"$2"/"$2".tar.gz ]; then pack $TEMPLATEPATH/$2 $2; fi
 
-        unpack $TYPEPATH $TARGETPATH
+        unpack $2 $TARGETPATH
         exit $E_SUCCESS
         ;;
     package)
@@ -72,23 +71,23 @@ case "$1" in
         if [ -z "$2" ]; then
             echo "Error: Must provide type name to package command."
             exit $E_BADPARAM
-        else
-            TYPEPATH=$TEMPLATEPATH/"$2"
         fi
 
         if [ ! -z "$3" ]; then
             SOURCEPATH="$3"
         else
-            SOURCEPATH=$TYPEPATH
+            SOURCEPATH=$TEMPLATEPATH/"$2"
         fi
 
         # -> Checks for existence of mkbuildenv.sh.
         if [ -d "$SOURCEPATH" ] && [ -e "$SOURCEPATH"/mkbuildenv.sh ]; then
-            pack $SOURCEPATH $TYPEPATH
+            pack "$SOURCEPATH" "$2"
         else
             echo "Error: Specified source path does not exist or does not contain a mkbuildenv.sh file."
             exit $E_BADPARAM
         fi
+
+        exit $E_SUCCESS
         ;;
     *)
         echo "Usage: ${0##*/} new TYPE [TARGET]"

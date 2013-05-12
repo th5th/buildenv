@@ -30,4 +30,4 @@ buildenv as a tool is licensed under the permissive Apache 2.0 license, as recom
 ### Todo
 
 1. Probably move mkbuildenv.sh out of the tarball and extract the tarball from where it sits. This avoids having to delete stuff each time.
-1. Add a -e flag to pass arbitrary arguments to mkbuildenv.sh.
+1. Add an `unpackage` command to remove created packages without having to reinstall or do it manually or whatever.

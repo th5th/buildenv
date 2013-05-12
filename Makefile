@@ -1,14 +1,16 @@
-# Makefile for installing buildenv. Currently no compilation required!
-
+# Makefile for installing buildenv.
 DEFAULTTYPES = C C++
+PACKAGES = $(patsubst %, %.tar.gz, ${DEFAULTTYPES})
 BINPATH = /usr/local
-# TEMPLATEPATH is hardcoded into the script...
 TEMPLATEPATH = /usr/local/etc
 
-dummy:
-	@echo No default target. Use \'make install\' or \'make uninstall\'.
+packages: ${PACKAGES}
 
-install:
+%.tar.gz: %
+	if [ -e $</$@ ]; then rm -rf $</$@; fi
+	tar --exclude=mkbuildenv.sh -czf $</$@ -C $< `ls -A $<`
+
+install: packages
 	mkdir -p ${BINPATH}/bin
 	cp -f buildenv ${BINPATH}/bin
 	chmod 755 ${BINPATH}/bin/buildenv
@@ -18,3 +20,5 @@ install:
 uninstall:
 	rm -f ${BINPATH}/bin/buildenv
 	rm -rf ${TEMPLATEPATH}/buildenv
+	
+.PHONY: packages
