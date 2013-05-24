@@ -1,9 +1,7 @@
-NAME = mainexec
-SRC = main.c
+include config.mk
+
 OBJ = ${SRC:.c=.o}
 DEPEND = ${SRC:.c=.d} 
-
-CFLAGS = -g -std=c99 -DDEBUG -Wall -Werror
 
 all: ${NAME}
 

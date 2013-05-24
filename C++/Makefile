@@ -1,9 +1,7 @@
-NAME = mainexec
-SRC = main.cpp
+include config.mk
+
 OBJ = ${SRC:.cpp=.o}
 DEPEND = ${SRC:.cpp=.d} 
-
-CXXFLAGS = -g -std=c++11 -DDEBUG -Wall -Werror
 
 all: ${NAME}
 

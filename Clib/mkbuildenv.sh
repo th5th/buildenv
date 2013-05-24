@@ -5,5 +5,5 @@ if [ -z "$1" ]; then
 else
     echo "CC = $1" >> config.mk
 fi
-git add main.c config.mk Makefile .gitignore
+git add test.c lib.c lib.h config.mk Makefile .gitignore
 git commit -a -m "Repository initialised by buildenv."

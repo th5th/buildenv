@@ -1,5 +1,5 @@
 # Makefile for installing buildenv.
-DEFAULTTYPES = C C++
+DEFAULTTYPES = C C++ Clib
 PACKAGES = $(patsubst %, %.tar.gz, ${DEFAULTTYPES})
 BINPATH = /usr/local
 TEMPLATEPATH = /usr/local/etc

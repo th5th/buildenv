@@ -1,7 +1,13 @@
 buildenv
 ========
 
-Buildenv is a Bash script and associated templates to easily set up new projects from a consistent set of files each time. Currently, only C and C++ projects are provided, though it is trivial to add new types. Absolutely no guarantees are made that any of this is a good idea or even vaguely works!
+Buildenv is a Bash script and associated templates to easily set up new projects from a consistent set of files each time. Currently the following environments are included:
+
+* C application
+* C++ application
+* C library (builds .so and .a libraries and a statically linked test application).
+
+It is trivial to add new types. Absolutely no guarantees are made that any of this is a good idea or even vaguely works!
 
 ### Installation
 
@@ -13,7 +19,7 @@ To create a new C project, use:
 
 `$ buildenv new C [TARGET]`
 
-As you can see from the source code, this copies a tarball from the TEMPLATEPATH/C directory into the TARGET directory, unpacks it, runs the mkbuildenv.sh script then deletes the tarball and mkbuildenv.sh. The C environment given creates a new git repo and commits an initial commit with the first bits in.
+As you can see from the source code, this copies a tarball from the TEMPLATEPATH/C directory into the TARGET directory, unpacks it, runs the mkbuildenv.sh script. The C environment given creates a new git repo and commits an initial commit with the first bits in.
 
 If TARGET directory is omitted, the current working directory is used.
 
@@ -29,5 +35,5 @@ buildenv as a tool is licensed under the permissive Apache 2.0 license, as recom
 
 ### Todo
 
-1. Probably move mkbuildenv.sh out of the tarball and extract the tarball from where it sits. This avoids having to delete stuff each time.
 1. Add an `unpackage` command to remove created packages without having to reinstall or do it manually or whatever.
+1. Add a `list` command to enumerate possible environment types.

@@ -36,14 +36,12 @@ function pack()
 {
     # Create a tarball for the whole directory.
     TARBALL="$TEMPLATEPATH"/"$2"/"$2".tar.gz
-    mkdir -p $TEMPLATEPATH/$2
     if [ -e $TARBALL ]; then rm $TARBALL; fi
     tar --exclude=mkbuildenv.sh -czf $TARBALL -C $1 `ls -A $1`
     if [ ! -e $TARBALL ]; then
         echo "Error: Could not create tarball."
         exit $E_COULDNOTTAR
     fi
-    cp -u --target-directory=$TEMPLATEPATH/$2 $1/mkbuildenv.sh
 }
 
 case "$1" in
@@ -79,7 +77,7 @@ case "$1" in
             SOURCEPATH=$TEMPLATEPATH/"$2"
         fi
 
-        # -> Checks for existence of mkbuildenv.sh.
+        # Checks for existence of mkbuildenv.sh.
         if [ -d "$SOURCEPATH" ] && [ -e "$SOURCEPATH"/mkbuildenv.sh ]; then
             pack "$SOURCEPATH" "$2"
         else
