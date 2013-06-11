@@ -31,7 +31,7 @@ This packs all the files in SOURCE directory up into a tarball which is stored u
 
 ### License
 
-buildenv as a tool is licensed under the permissive Apache 2.0 license, as recommended by FSF for short works. I consider the templates installed by buildenv to be in the public domain, but they are so short I have not bothered to explicitly license them.
+buildenv as a tool is licensed under the permissive Apache 2.0 license, as recommended by FSF for short works. The provided environment bundles come with template Apache licenses to allow quick set up, but they are so simple I have not claimed copyright. I'm sure I could even if I wanted to.
 
 ### Todo
 
