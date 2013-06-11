@@ -22,9 +22,8 @@
 BUILDENV="buildenv 0.1 (c) 2013 Ed Willson <ed.willson24@gmail.com>"
 
 E_SUCCESS=0
-E_BADTYPE=1
-E_BADPARAM=2
-E_COULDNOTTAR=3
+E_MINOR=1
+E_MAJOR=2
 
 TEMPLATEPATH="/usr/local/etc/buildenv"
 
@@ -46,15 +45,31 @@ function pack()
     tar -czf $TARBALL -C $1 `ls -A $1`
     if [ ! -e $TARBALL ]; then
         echo "Error: Could not create tarball."
-        exit $E_COULDNOTTAR
+        exit $E_MINOR
     fi
 }
 
 case "$1" in
+    list)
+        if [ -e $TEMPLATEPATH ]; then
+            if [ -z `ls $TEMPLATEPATH`]; then
+                echo "No available packages in $TEMPLATEPATH"
+            else
+                echo "Available packages in $TEMPLATEPATH:"
+                for PKG in `ls $TEMPLATEPATH | grep .*\.tar\.gz | sed -e 's/.tar.gz//'`; do
+                    echo "  $PKG"
+                done
+            fi
+            exit $E_SUCCESS
+        else
+            echo "Error: $TEMPLATEPATH not found"
+            exit $E_MAJOR
+        fi
+        ;;
     new)
         if [ ! -e $TEMPLATEPATH/"$2".tar.gz ]; then
             echo "Error: Supplied enironment type ("$2") does not exist in $TEMPLATEPATH"
-            exit $E_BADTYPE
+            exit $E_MINOR
         fi
 
         if [ ! -z "$3" ]; then
@@ -67,15 +82,11 @@ case "$1" in
         unpack $2 $TARGETPATH
         exit $E_SUCCESS
         ;;
-# Coming soon
-#    list)
-#        ls $TEMPLATEPATH
-#        ;;
     package)
         # Command to create a new build environment type from the current working dir.
         if [ -z "$2" ]; then
             echo "Error: Must provide type name to package command."
-            exit $E_BADPARAM
+            exit $E_MAJOR
         fi
 
         if [ ! -z "$3" ]; then
@@ -89,14 +100,16 @@ case "$1" in
             pack "$SOURCEPATH" "$2"
         else
             echo "Error: Specified source path does not exist or does not contain a mkbuildenv.sh file."
-            exit $E_BADPARAM
+            exit $E_MAJOR
         fi
 
         exit $E_SUCCESS
         ;;
     *)
         echo "${BUILDENV}"
-        echo "Usage: ${0##*/} new | package <type> [path]"
-        exit $E_BADPARAM
+        echo "Usage: ${0##*/} new <type> [path]"
+        echo "                package <type> [path]"
+        echo "                list"
+        exit $E_MAJOR
         ;;
 esac

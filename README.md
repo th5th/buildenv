@@ -27,7 +27,11 @@ To create a type of project tarball in the first place use:
 
 `$ buildenv package TYPE [SOURCE]`
 
-This packs all the files in SOURCE directory up into a tarball which is stored under TEMPLATEPATH/TYPE, for later access by new. If the SOURCE directory is omitted, the TEMPLATEPATH/TYPE folder is repackaged, essentially updating the tarball to reflect any code changes made to the template files.
+This packs all the files in SOURCE directory up into a tarball which is stored under TEMPLATEPATH, for later access by new. If the SOURCE directory is omitted, the current working directory is used.
+
+Finally, to list which projects have been packaged for your consumption just type:
+
+`$ buildenv list`
 
 ### License
 
@@ -36,4 +40,3 @@ buildenv as a tool is licensed under the permissive Apache 2.0 license, as recom
 ### Todo
 
 1. Add an `unpackage` command to remove created packages without having to reinstall or do it manually or whatever.
-1. Add a `list` command to enumerate possible environment types.
