@@ -52,7 +52,7 @@ function pack()
 case "$1" in
     list)
         if [ -e $TEMPLATEPATH ]; then
-            if [ -z `ls $TEMPLATEPATH`]; then
+            if [ -z "`ls $TEMPLATEPATH`" ]; then
                 echo "No available packages in $TEMPLATEPATH"
             else
                 echo "Available packages in $TEMPLATEPATH:"
