@@ -22,6 +22,6 @@
 
 int main(int argc, char * arg[])
 {
-	printf("some_library function returned %d\n", some_library_function());
+	printf("some_library_function returned %d\n", some_library_function());
 	return 0;
 }	

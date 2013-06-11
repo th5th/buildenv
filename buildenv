@@ -31,9 +31,10 @@ TEMPLATEPATH="/usr/local/etc/buildenv"
 # unpack the package in directory for type $1 into directory $2.
 function unpack()
 {
-    tar --keep-newer-files -xzf "$TEMPLATEPATH"/"$1"/"$1".tar.gz -C $2
+    tar --keep-newer-files -xzf "$TEMPLATEPATH"/"$1".tar.gz -C $2
     pushd $2
-    $TEMPLATEPATH/$1/mkbuildenv.sh
+    ./mkbuildenv.sh
+    rm mkbuildenv.sh
     popd
 }
 
@@ -41,9 +42,8 @@ function unpack()
 function pack()
 {
     # Create a tarball for the whole directory.
-    TARBALL="$TEMPLATEPATH"/"$2"/"$2".tar.gz
-    if [ -e $TARBALL ]; then rm $TARBALL; fi
-    tar --exclude=mkbuildenv.sh -czf $TARBALL -C $1 `ls -A $1`
+    TARBALL="$TEMPLATEPATH"/"$2".tar.gz
+    tar -czf $TARBALL -C $1 `ls -A $1`
     if [ ! -e $TARBALL ]; then
         echo "Error: Could not create tarball."
         exit $E_COULDNOTTAR
@@ -52,7 +52,7 @@ function pack()
 
 case "$1" in
     new)
-        if [ ! -d $TEMPLATEPATH/"$2" ]; then
+        if [ ! -e $TEMPLATEPATH/"$2".tar.gz ]; then
             echo "Error: Supplied enironment type ("$2") does not exist in $TEMPLATEPATH"
             exit $E_BADTYPE
         fi
@@ -64,12 +64,13 @@ case "$1" in
             TARGETPATH=`pwd`
         fi
 
-        # If there isn't an available tarball, make one!
-        if [ ! -e "$TEMPLATEPATH"/"$2"/"$2".tar.gz ]; then pack $TEMPLATEPATH/$2 $2; fi
-
         unpack $2 $TARGETPATH
         exit $E_SUCCESS
         ;;
+# Coming soon
+#    list)
+#        ls $TEMPLATEPATH
+#        ;;
     package)
         # Command to create a new build environment type from the current working dir.
         if [ -z "$2" ]; then
@@ -80,7 +81,7 @@ case "$1" in
         if [ ! -z "$3" ]; then
             SOURCEPATH="$3"
         else
-            SOURCEPATH=$TEMPLATEPATH/"$2"
+            SOURCEPATH=`pwd`
         fi
 
         # Checks for existence of mkbuildenv.sh.
