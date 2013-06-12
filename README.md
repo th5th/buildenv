@@ -21,15 +21,19 @@ To create a new project, use:
 
 As you can see from the source code, this copies a tarball from the PKGPATH directory to [path], unpacks it and runs the mkbuildenv.sh script. The C environment given creates a new git repo and commits an initial commit with the first bits in. If [path] is omitted, the current working directory is used. Arguments can be passed to the mkbuildenv.sh script by tacking them on to the end of the call. Note that if path is to be omitted, it must be replaced by "--", otherwise the first mkbuildenv.sh arg will be parsed as the target path!
 
-To create a type of project tarball in the first place use:
+To create a type tarball use:
 
 `$ buildenv package <type> [path]`
 
-This packs all the files in [path] directory up into a tarball which is stored under PKGPATH, for later access by new. If the [path] directory is omitted, the current working directory is used.
+This packs all the files in [path] directory up into a tarball which is stored under PKGPATH, for later access by new. If the [path] directory is omitted, the current working directory is used. If the [path] directory contains a file called `<type>.info`, that file will NOT be packaged, but will be directly copied and used as a description of the project type in the list command's output.
 
-Finally, to list which projects have been packaged for your consumption just type:
+...which is executed as follows:
 
 `$ buildenv list`
+
+Finally, to remove a project type from buildenv's package directory, run:
+
+`$ buildenv remove <type>`
 
 ### License
 
@@ -37,4 +41,4 @@ buildenv as a tool is licensed under the permissive Apache 2.0 license, as recom
 
 ### Todo
 
-1. Add an `unpackage` command to remove created packages without having to reinstall or do it manually or whatever.
+Nothing right now!

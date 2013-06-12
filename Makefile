@@ -3,25 +3,39 @@ VERSION = 0.1.1
 BASEPKGS = C C++ Clib
 LOCALPKGPATH = ./packages
 PACKAGES = $(patsubst %, $(LOCALPKGPATH)/%.tar.gz, $(BASEPKGS))
+INFOS = $(PACKAGES:.tar.gz=.info)
 BINPATH = /usr/local/bin
 PKGPATH = /usr/local/etc/buildenv
 
 $(LOCALPKGPATH)/%.tar.gz: %
-	tar -czf $@ -C $< `ls -A $<`
+	tar --exclude=$<.info -czf $@ -C $< `ls -A $<`
+	
+$(LOCALPKGPATH)/%.info: %
+	cp -f $</$<.info $@
 
-packages: $(PACKAGES)
+local: buildenv.out packages
 
-install: packages
-	mkdir -p $(BINPATH)
+packages: $(PACKAGES) $(INFOS)
+
+buildenv.out: buildenv
 	sed -e 's/##VERSIONDEF/VERSION="$(VERSION)"/' \
 		-e 's@##PKGPATHDEF@PKGPATH="$(PKGPATH)"@' \
 		buildenv > buildenv.out
+	chmod 755 buildenv.out
+
+install: local
+	mkdir -p $(BINPATH)
 	cp -f buildenv.out $(BINPATH)/buildenv
 	chmod 755 $(BINPATH)/buildenv
 	mkdir -p $(PKGPATH)
-	cp -rf -t $(PKGPATH) $(PACKAGES) 
+	cp -rf -t $(PKGPATH) $(PACKAGES) $(INFOS)
 
 uninstall:
 	rm -f $(BINPATH)/buildenv
 	rm -rf $(PKGPATH)
 	
+clean:
+	rm -f buildenv.out
+	rm -f $(LOCALPKGPATH)/*
+
+.PHONY: local packages

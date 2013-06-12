@@ -11,8 +11,7 @@
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
+# # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
@@ -20,8 +19,8 @@
 # 
 
 # Custom config
-##VERSIONDEF
-##PKGPATHDEF
+VERSION="0.1.1"
+PKGPATH="/usr/local/etc/buildenv"
 
 BUILDENV="buildenv $VERSION (c) 2013 Ed Willson <ed.willson24@gmail.com>"
 
@@ -45,10 +44,12 @@ function pack()
 {
     # Create a tarball for the whole directory.
     TARBALL=$PKGPATH/"$2".tar.gz
-    tar -czf $TARBALL -C $1 `ls -A $1`
+    tar  --exclude=$2.info -czf $TARBALL -C $1 `ls -A $1`
     if [ ! -e $TARBALL ]; then
         echo "Error: Could not create tarball."
         exit $E_MINOR
+    elif [ -e "$1"/"$2".info ]; then
+        cp -f "$1"/"$2".info $PKGPATH
     fi
 }
 
@@ -60,7 +61,12 @@ case "$1" in
             else
                 echo "Available packages in $PKGPATH:"
                 for PKG in `ls $PKGPATH | grep .*\.tar\.gz | sed -e 's/.tar.gz//'`; do
-                    echo "  $PKG"
+                    if [ -e $PKGPATH/$PKG.info ]; then
+                        INFO=`head -n 1 $PKGPATH/$PKG.info`
+                        echo -e "  $PKG\t $INFO"
+                    else
+                        echo -e "  $PKG"
+                    fi
                 done
             fi
             exit $E_SUCCESS
@@ -71,7 +77,7 @@ case "$1" in
         ;;
     new)
         if [ ! -e $PKGPATH/"$2".tar.gz ]; then
-            echo "Error: Supplied enironment type ("$2") does not exist in $PKGPATH"
+            echo "Error: Supplied environment type ("$2") does not exist in $PKGPATH"
             exit $E_MINOR
         else
             TYPE=$2
@@ -115,10 +121,30 @@ case "$1" in
 
         exit $E_SUCCESS
         ;;
+    remove)
+        if [ -z "$2" ]; then
+            echo "Error: Must provide type name to remove command."
+            exit $E_MAJOR
+        fi
+
+        if [ ! -e $PKGPATH/"$2".tar.gz ]; then
+            echo "Error: Supplied environment type ("$2") does not exist in $PKGPATH"
+            exit $E_MINOR
+        else
+            rm -f $PKGPATH/"$2".tar.gz
+        fi
+        
+        if [ -e $PKGPATH/"$2".info ]; then
+            rm -f $PKGPATH/"$2".info
+        fi
+
+        exit ${E_SUCCESS}
+        ;;
     *)
         echo "${BUILDENV}"
         echo "Usage: ${0##*/} new <type> [path | --] [mkbuildenv.sh options]"
         echo "                package <type> [path]"
+        echo "                remove <type>"
         echo "                list"
         exit $E_MAJOR
         ;;
