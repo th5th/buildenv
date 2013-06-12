@@ -1,6 +1,6 @@
 #!/bin/bash
 # 
-# buildenv 0.1
+# buildenv
 #
 # A Bash script for managing sweet build environments.
 #
@@ -19,20 +19,23 @@
 # limitations under the License.
 # 
 
-BUILDENV="buildenv 0.1 (c) 2013 Ed Willson <ed.willson24@gmail.com>"
+# Custom config
+##VERSIONDEF
+##PKGPATHDEF
+
+BUILDENV="buildenv $VERSION (c) 2013 Ed Willson <ed.willson24@gmail.com>"
 
 E_SUCCESS=0
 E_MINOR=1
 E_MAJOR=2
 
-TEMPLATEPATH="/usr/local/etc/buildenv"
-
 # unpack the package in directory for type $1 into directory $2.
 function unpack()
 {
-    tar --keep-newer-files -xzf "$TEMPLATEPATH"/"$1".tar.gz -C $2
+    tar --keep-newer-files -xzf "$PKGPATH"/"$1".tar.gz -C $2
     pushd $2
-    ./mkbuildenv.sh
+    shift 2 # any remaining arguments are made available to mkbuildenv.sh
+    source mkbuildenv.sh
     rm mkbuildenv.sh
     popd
 }
@@ -41,7 +44,7 @@ function unpack()
 function pack()
 {
     # Create a tarball for the whole directory.
-    TARBALL="$TEMPLATEPATH"/"$2".tar.gz
+    TARBALL=$PKGPATH/"$2".tar.gz
     tar -czf $TARBALL -C $1 `ls -A $1`
     if [ ! -e $TARBALL ]; then
         echo "Error: Could not create tarball."
@@ -51,35 +54,42 @@ function pack()
 
 case "$1" in
     list)
-        if [ -e $TEMPLATEPATH ]; then
-            if [ -z "`ls $TEMPLATEPATH`" ]; then
-                echo "No available packages in $TEMPLATEPATH"
+        if [ -e $PKGPATH ]; then
+            if [ -z "`ls $PKGPATH`" ]; then
+                echo "No available packages in $PKGPATH"
             else
-                echo "Available packages in $TEMPLATEPATH:"
-                for PKG in `ls $TEMPLATEPATH | grep .*\.tar\.gz | sed -e 's/.tar.gz//'`; do
+                echo "Available packages in $PKGPATH:"
+                for PKG in `ls $PKGPATH | grep .*\.tar\.gz | sed -e 's/.tar.gz//'`; do
                     echo "  $PKG"
                 done
             fi
             exit $E_SUCCESS
         else
-            echo "Error: $TEMPLATEPATH not found"
+            echo "Error: $PKGPATH not found"
             exit $E_MAJOR
         fi
         ;;
     new)
-        if [ ! -e $TEMPLATEPATH/"$2".tar.gz ]; then
-            echo "Error: Supplied enironment type ("$2") does not exist in $TEMPLATEPATH"
+        if [ ! -e $PKGPATH/"$2".tar.gz ]; then
+            echo "Error: Supplied enironment type ("$2") does not exist in $PKGPATH"
             exit $E_MINOR
-        fi
-
-        if [ ! -z "$3" ]; then
-            TARGETPATH="$3"
-            if [ ! -d "$3" ]; then mkdir -p $TARGETPATH; fi
         else
-            TARGETPATH=`pwd`
+            TYPE=$2
+            shift 2
         fi
 
-        unpack $2 $TARGETPATH
+        TARGETPATH=`pwd`
+
+        if [ ! -z "$1" ]; then
+            if [ "$1" != "--" ]; then
+                TARGETPATH="$1"
+                if [ ! -d "$TARGETPATH" ]; then mkdir -p $TARGETPATH; fi
+            fi
+            shift # use -- as end of buildenv options
+        fi
+
+        # Unpack this type, and pass any trailing args to the mkbuildenv.sh script.
+        unpack $TYPE $TARGETPATH "$@"
         exit $E_SUCCESS
         ;;
     package)
@@ -107,7 +117,7 @@ case "$1" in
         ;;
     *)
         echo "${BUILDENV}"
-        echo "Usage: ${0##*/} new <type> [path]"
+        echo "Usage: ${0##*/} new <type> [path | --] [mkbuildenv.sh options]"
         echo "                package <type> [path]"
         echo "                list"
         exit $E_MAJOR
