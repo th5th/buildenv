@@ -7,27 +7,25 @@ Buildenv is a Bash script and associated templates to easily set up new projects
 * C++ application
 * C library (builds .so and .a libraries and a statically linked test application).
 
-It is trivial to add new types. Absolutely no guarantees are made that any of this is a good idea or even vaguely works!
+It is trivial to add new types.
 
 ### Installation
 
-To use buildenv, download the sauce and run `make install` (you will probably need to sudo that). This installs the buildenv script to /usr/local/bin/buildenv, and the provided templates to /usr/local/etc/buildenv.
+To use buildenv, download the sauce and run `sudo make install`. This installs the buildenv script to /usr/local/bin/buildenv, and the provided project setups to /usr/local/etc/buildenv.
 
 ### Usage
 
-To create a new C project, use:
+To create a new project, use:
 
-`$ buildenv new C [TARGET]`
+`$ buildenv new <type> [path | --] [mkbuildenv.sh options]`
 
-As you can see from the source code, this copies a tarball from the TEMPLATEPATH/C directory into the TARGET directory, unpacks it, runs the mkbuildenv.sh script. The C environment given creates a new git repo and commits an initial commit with the first bits in.
-
-If TARGET directory is omitted, the current working directory is used.
+As you can see from the source code, this copies a tarball from the PKGPATH directory to [path], unpacks it and runs the mkbuildenv.sh script. The C environment given creates a new git repo and commits an initial commit with the first bits in. If [path] is omitted, the current working directory is used. Arguments can be passed to the mkbuildenv.sh script by tacking them on to the end of the call. Note that if path is to be omitted, it must be replaced by "--", otherwise the first mkbuildenv.sh arg will be parsed as the target path!
 
 To create a type of project tarball in the first place use:
 
-`$ buildenv package TYPE [SOURCE]`
+`$ buildenv package <type> [path]`
 
-This packs all the files in SOURCE directory up into a tarball which is stored under TEMPLATEPATH, for later access by new. If the SOURCE directory is omitted, the current working directory is used.
+This packs all the files in [path] directory up into a tarball which is stored under PKGPATH, for later access by new. If the [path] directory is omitted, the current working directory is used.
 
 Finally, to list which projects have been packaged for your consumption just type:
 
