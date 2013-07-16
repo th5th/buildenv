@@ -1,9 +1,11 @@
 #!/bin/bash
 git init
 if [ -z "$1" ]; then
-    echo "CC = gcc" >> config.mk
+    NAME="name"
 else
-    echo "CC = $1" >> config.mk
+    NAME="$1"
 fi
-git add main.c config.mk Makefile .gitignore
+echo "NAME = $NAME" >> config.mk
+echo "$NAME" >> .gitignore
+git add config.mk LICENSE main.c Makefile README.md .gitignore
 git commit -a -m "Repository initialised by buildenv."

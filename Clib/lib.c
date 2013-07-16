@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <lib.h>
+#include "lib.h"
 
 int some_library_function()
 {

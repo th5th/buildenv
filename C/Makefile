@@ -3,6 +3,8 @@ include config.mk
 OBJ = ${SRC:.c=.o}
 DEPEND = ${SRC:.c=.d} 
 
+CFLAGS += -DNAME=\"$(NAME)\" -DVERSION=\"$(VERSION)\"
+
 all: ${NAME}
 
 ${NAME}: ${OBJ}

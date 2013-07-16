@@ -1,12 +1,14 @@
 include config.mk
 
-LIB = lib$(NAME).so
-STATIC = lib$(NAME).a
-TEST= $(NAME)-test
+LIB=lib$(NAME).so
+STATIC=lib$(NAME).a
+TEST=$(NAME)-test
 
 LIBOBJ = $(LIBSRC:.c=.o)
 TESTOBJ = $(TESTSRC:.c=.o)
 DEPEND = $(LIBSRC:.c=.d) $(TESTSRC:.c=.d) 
+
+CFLAGS += -DNAME=\"$(NAME)\" -DVERSION=\"$(VERSION)\"
 
 all: $(LIB) $(STATIC) $(TEST)
 so: $(LIB)

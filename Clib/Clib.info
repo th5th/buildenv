@@ -1,1 +1,1 @@
-C library project. mkbuildenv.sh argument names the C compiler to use.
+C library project. mkbuildenv.sh argument specifies the project name.

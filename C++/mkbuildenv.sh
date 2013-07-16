@@ -1,9 +1,11 @@
 #!/bin/bash
 git init
 if [ -z "$1" ]; then
-    echo "CXX = g++" >> config.mk
+    NAME="name"
 else
-    echo "CXX = $1" >> config.mk
+    NAME="$1"
 fi
-git add main.cpp config.mk Makefile .gitignore
+echo "NAME = $NAME" >> config.mk
+echo "$NAME" >> .gitignore
+git add config.mk LICENSE main.cpp Makefile README.md .gitignore
 git commit -a -m "Repository initialised by buildenv."

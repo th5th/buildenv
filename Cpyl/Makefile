@@ -3,17 +3,16 @@ include config.mk
 LIB = lib$(NAME).so
 STATIC = lib$(NAME).a
 TEST= $(NAME)-test
-PYMOD=py$(NAME)
-PYSO=_$(PYMOD).so
-SWIGWRAP=$(PUBHEADER:.h=_wrap.c)
 
+PYSO=_$(PYMOD).so
 PYFILES=$(PYMOD).py $(PYMOD).pyc 
+SWIGWRAP=$(PUBHEADER:.h=_wrap.c)
 SWIGOBJ=$(SWIGWRAP:.c=.o)
 LIBOBJ = $(LIBSRC:.c=.o)
 TESTOBJ = $(TESTSRC:.c=.o)
 DEPEND = $(LIBSRC:.c=.d) $(TESTSRC:.c=.d) 
 
-CFLAGS += -DNAME="$(NAME)" -DVERSION="$(VERSION)"
+CFLAGS += -DNAME=\"$(NAME)\" -DVERSION=\"$(VERSION)\"
 
 all: $(LIB) $(STATIC) $(TEST)
 so: $(LIB)
