@@ -1,6 +1,6 @@
 # Makefile for installing buildenv.
 VERSION = 0.1.1
-BASEPKGS = C C++ Clib
+BASEPKGS = C C++ Clib Cpyl
 LOCALPKGPATH = ./packages
 PACKAGES = $(patsubst %, $(LOCALPKGPATH)/%.tar.gz, $(BASEPKGS))
 INFOS = $(PACKAGES:.tar.gz=.info)
