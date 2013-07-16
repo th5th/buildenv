@@ -6,6 +6,7 @@ Buildenv is a Bash script and associated templates to easily set up new projects
 * C application
 * C++ application
 * C library (builds .so and .a libraries and a statically linked test application).
+* C library with SWIG wrapper (as above, but with a wrapper which allows the library's use in Python).
 
 It is trivial to add new types.
 
@@ -37,8 +38,9 @@ Finally, to remove a project type from buildenv's package directory, run:
 
 ### License
 
-buildenv as a tool is licensed under the permissive Apache 2.0 license, as recommended by FSF for short works. The provided environment bundles come with template Apache licenses to allow quick set up, but they are so simple I have not claimed copyright. I'm sure I could even if I wanted to.
+buildenv as a tool is licensed under the permissive Apache 2.0 license, as recommended by FSF for short works. The provided environment bundles come with template Apache licenses to allow quick set up, but they are so simple I have not claimed copyright. I'm not sure I could even if I wanted to.
 
 ### Todo
 
-Nothing right now!
++ Add a `new-dev` package with empty `mkbuildenv.sh` and `<type>.info` files, and no git repo. Or something. To allow very quick package making without having to manually copy tarballs from wherever.
++ Add install and uninstall targets to packages. Potentially very useful!
