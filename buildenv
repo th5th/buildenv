@@ -19,8 +19,8 @@
 # 
 
 # Custom config
-VERSION="0.1.2.1"
-PKGPATH="/usr/local/etc/buildenv"
+##VERSIONDEF
+##PKGPATHDEF
 
 BUILDENV="buildenv $VERSION (c) 2013 Ed Willson <ed.willson24@gmail.com>"
 
