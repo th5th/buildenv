@@ -8,6 +8,7 @@ BINPATH = /usr/local/bin
 PKGPATH = /usr/local/etc/buildenv
 
 $(LOCALPKGPATH)/%.tar.gz: %
+	mkdir -p $(LOCALPKGPATH)
 	tar --exclude=$<.info -czf $@ -C $< `ls -A $<`
 	
 $(LOCALPKGPATH)/%.info: %

@@ -1,4 +1,3 @@
-Packages directory not created by project Makefile
 Change include lines to -include
 Pull in changes for SWIG Makefile from work
 Add install targets for projects
