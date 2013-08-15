@@ -1,3 +1,2 @@
-Change include lines to -include
-Pull in changes for SWIG Makefile from work
+Add a `new-dev` package with empty `mkbuildenv.sh` and `<type>.info` files, and no git repo. Or something. To allow very quick package making without having to manually copy tarballs from wherever.
 Add install targets for projects

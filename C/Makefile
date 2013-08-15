@@ -1,22 +1,21 @@
 include config.mk
 
-OBJ = ${SRC:.c=.o}
-DEPEND = ${SRC:.c=.d} 
+OBJ = $(SRC:.c=.o)
+DEPEND = $(SRC:.c=.d) 
 
 CFLAGS += -DNAME=\"$(NAME)\" -DVERSION=\"$(VERSION)\"
 
-all: ${NAME}
+all: $(NAME)
 
-${NAME}: ${OBJ}
-	${CC} -o $@ $^ ${LDFLAGS}
+$(NAME): $(OBJ)
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+-include $(DEPEND)
 
 %.d: %.c
-	@set -e; rm -f $@
-	${CC} -MM ${CFLAGS} ${CPPFLAGS} $< | sed 's/\(^.*\)\.o[ :]*/\1.o $@ : /g' > $@
-
-include ${DEPEND}
+	$(CC) -MM $(CFLAGS) $(CPPFLAGS) $< > $@
 
 clean:
-	rm -f ${NAME} ${OBJ} ${DEPEND}
+	rm -f $(NAME) $(OBJ) $(DEPEND)
 
 .PHONY: clean

@@ -39,8 +39,3 @@ Finally, to remove a project type from buildenv's package directory, run:
 ### License
 
 buildenv as a tool is licensed under the permissive Apache 2.0 license, as recommended by FSF for short works. The provided environment bundles come with template Apache licenses to allow quick set up, but they are so simple I have not claimed copyright. I'm not sure I could even if I wanted to.
-
-### Todo
-
-+ Add a `new-dev` package with empty `mkbuildenv.sh` and `<type>.info` files, and no git repo. Or something. To allow very quick package making without having to manually copy tarballs from wherever.
-+ Add install and uninstall targets to packages. Potentially very useful!

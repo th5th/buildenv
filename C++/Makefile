@@ -10,11 +10,10 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
-%.d: %.cpp
-	@set -e; rm -f $@
-	$(CXX) -MM $(CXXFLAGS) $(CPPFLAGS) $< | sed 's/\(^.*\)\.o[ :]*/\1.o $@ : /g' > $@
+-include $(DEPEND)
 
-include $(DEPEND)
+%.d: %.cpp
+	$(CXX) -MM $(CXXFLAGS) $(CPPFLAGS) $<  > $@
 
 clean:
 	rm -f $(NAME) $(OBJ) $(DEPEND)
