@@ -4,9 +4,9 @@ LIB = lib$(NAME).so
 STATIC = lib$(NAME).a
 TEST = $(NAME)-test
 
-LIBOBJ = $(LIBSRC:.c=.o)
-TESTOBJ = $(TESTSRC:.c=.o)
-DEPEND = $(LIBSRC:.c=.d) $(TESTSRC:.c=.d) 
+LIBOBJ = $(LIBSRC:%.c=%.o)
+TESTOBJ = $(TESTSRC:%.c=%.o)
+DEPEND = $(LIBSRC:%.c=%.d) $(TESTSRC:%.c=%.d) 
 
 CFLAGS += -DNAME=\"$(NAME)\" -DVERSION=\"$(VERSION)\"
 

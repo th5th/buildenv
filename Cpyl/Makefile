@@ -6,11 +6,11 @@ TEST = $(NAME)-test
 
 PYSO = _$(PYMOD).so
 PYFILES = $(PYMOD).py $(PYMOD).pyc 
-SWIGWRAP = $(INTERFACE:.i=_wrapper.c)
-SWIGOBJ = $(SWIGWRAP:.c=.o)
-LIBOBJ = $(LIBSRC:.c=.o)
-TESTOBJ = $(TESTSRC:.c=.o)
-DEPEND = $(LIBSRC:.c=.d) $(TESTSRC:.c=.d) 
+SWIGWRAP = $(INTERFACE:%.i=_wrapper%.c)
+SWIGOBJ = $(SWIGWRAP:%.c=%.o)
+LIBOBJ = $(LIBSRC:%.c=%.o)
+TESTOBJ = $(TESTSRC:%.c=%.o)
+DEPEND = $(LIBSRC:%.c=%.d) $(TESTSRC:%.c=%.d)
 
 CFLAGS += -DNAME=\"$(NAME)\" -DVERSION=\"$(VERSION)\"
 

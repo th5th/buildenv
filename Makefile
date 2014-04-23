@@ -35,9 +35,7 @@ uninstall:
 	rm -f $(BINPATH)/buildenv
 	rm -rf $(PKGPATH)
 
-reinstall:
-	$(MAKE) uninstall
-	$(MAKE) install
+reinstall: uninstall install
 	
 clean:
 	rm -f buildenv.out

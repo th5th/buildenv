@@ -1,7 +1,7 @@
 include config.mk
 
-OBJ = $(SRC:.cpp=.o)
-DEPEND = $(SRC:.cpp=.d) 
+OBJ = $(SRC:%.cpp=%.o)
+DEPEND = $(SRC:%.cpp=%.d)
 
 CXXFLAGS += -DNAME=\"$(NAME)\" -DVERSION=\"$(VERSION)\"
 
